@@ -1,4 +1,14 @@
 {
+  "name": "lexus_owner_community",
+  "version": "1.0.0",
+  "description": "Welcome to the **Lexus Owner Community**, a full-stack web application built exclusively for Lexus car owners. This platform enables users to connect, trade vehicles and spare parts, ask technical questions, and share their Lexus experiences.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
@@ -10,8 +20,9 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
+    "artillery": "^1.7.9",
     "jest": "^30.0.5",
-    "mongodb-memory-server": "^10.2.0",
+    "mongodb-memory-server": "^10.1.4",
     "supertest": "^7.1.4"
   }
 }
