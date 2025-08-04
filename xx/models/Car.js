@@ -16,4 +16,4 @@ specifications: {type: String, required: true},
 
 
 const Cars=mongoose.model('Car',carSchema)
-module.exports=Car
+module.exports=Cars
