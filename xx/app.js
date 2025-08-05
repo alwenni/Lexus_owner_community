@@ -4,7 +4,7 @@ const jsxEngine = require('jsx-view-engine')
 const methodOverride = require('method-override')
 const userRoutes = require('./controllers/auth/routeController')
 const routeController = require('./controllers/posts/routeController')
-const apiRoutes = require('./routes/apiRoutes')
+// const apiRoutes = require('./routes/apiRoutes')
 const app = express()
 
 app.set('view engine', 'jsx')
@@ -25,6 +25,6 @@ app.use('/users', userRoutes)
 app.use('/posts', routeController)
 
 // API routes (for JSON responses)
-app.use('/api', apiRoutes)
+// app.use('/api', apiRoutes)
 
 module.exports = app

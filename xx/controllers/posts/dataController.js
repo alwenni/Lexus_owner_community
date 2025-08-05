@@ -1,11 +1,11 @@
-const Post = require('../../models/Car.js')
+const Post = require('../../models/user.js')
 
 const dataController = {}
 
 dataController.index = async (req, res, next) => {
   try {
-    const author = await req.author.populate('posts')
-    res.locals.data.posts = author.posts
+    const user = await req.user.populate('posts')
+    res.locals.data.posts = user.posts
     next()
   } catch(error) {
     res.status(400).send({ message: error.message })
@@ -13,16 +13,11 @@ dataController.index = async (req, res, next) => {
 }
 
 dataController.create = async (req, res, next) => {
-  if(req.body.published === 'on'){
-    req.body.published = true;
-  } else if(req.body.published !== true) {
-    req.body.published = false;
-  }
+  
   try {
-    req.body.author = req.author._id
     res.locals.data.post = await Post.create(req.body)
-    req.author.posts.addToSet({_id: res.locals.data.post._id })
-    await req.author.save()
+    req.user.posts.addToSet({_id: res.locals.data.post._id })
+    await req.user.save()
     next()
   } catch (error) {
     res.status(400).send({ message: error.message })

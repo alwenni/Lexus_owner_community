@@ -6,7 +6,7 @@ function SignIn(){
     <Layout>
       <div>
         <h1>Welcome Back</h1>
-        <form action="/authors/login" method="POST">
+            <form action="/users/login" method="POST">
           <div className="form-group">
             <label htmlFor="email">Email:</label>
             <input type="email" id="email" name="email" required />
@@ -17,7 +17,7 @@ function SignIn(){
           </div>
           <button type="submit" className="btn btn-primary">Sign In</button>
         </form>
-        <p>Don't have an account? <a href="/authors">Sign Up</a></p>
+        <p>Don't have an account? <a href="/users/signup">Sign Up</a></p>
       </div>
     </Layout>
   )

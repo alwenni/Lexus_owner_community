@@ -7,7 +7,7 @@ const viewController = {
     res.render('/auth/SignIn')
   },
   index(req, res, next){
-    res.render('posts/Index', res.locals.data)
+    res.render('posts/index', res.locals.data)
   },
   show(req, res, next){
     res.render('posts/Show', res.locals.data)

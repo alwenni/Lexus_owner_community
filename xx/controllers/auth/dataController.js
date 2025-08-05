@@ -2,6 +2,26 @@ const User = require('../../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const dataController = {}
+
+dataController.auth = async (req, res, next) => {
+  try {
+    let token
+    if (req.query.token) {
+      token = req.query.token
+    } else if (req.header('Authorization')) {
+      token = req.header('Authorization').replace('Bearer ', '')
+    } else {
+      throw new Error('No token provided')
+    }
+    const  data = jwt.verify(token, 'secret')
+    req.user = await User.findById({ _id: data._id })
+    next()
+  } catch (error) {
+    res.status(401).send('Not authorized')
+  }
+}
+
 // instead of creating an object we can use the exports object directly
 // this is how
 
