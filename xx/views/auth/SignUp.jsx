@@ -1,15 +1,15 @@
 const React = require('react')
 const Layout = require('../layouts/Layout')
 
-function SignUp(props){
-  return(
+function SignUp() {
+  return (
     <Layout>
-      <div>
-        <h1>Join Our Lexus Owners Community</h1>
-        <form action="/users" method="POST">
+      <div className="auth-container">
+        <h1>Join Market-place</h1>
+        <form action="/users/signup" method="POST">
           <div className="form-group">
-            <label htmlFor="name">Name:</label>
-            <input type="text" id="name" name="username" required />
+            <label htmlFor="name">Full Name:</label>
+            <input type="text" id="name" name="name" required />
           </div>
           <div className="form-group">
             <label htmlFor="email">Email:</label>
@@ -19,24 +19,18 @@ function SignUp(props){
             <label htmlFor="password">Password:</label>
             <input type="password" id="password" name="password" required />
           </div>
-
-        
-            </form>
-            
-            <div className="text-center mt-3">
-                <p>Already have an account? <a href="/users/signin">Sign in here</a></p>
-            </div>
+          <div className="form-group">
+            <label htmlFor="location">Location:</label>
+            <input type="text" id="location" name="location" required />
           </div>
-
-          <div className="d-flex gap-2">
-                    <button type="submit" className="btn btn-primary">
-                        📝 Create Account
-                    </button>
-                    <a href="/users/signin" className="btn btn-secondary">
-                        🔐 Sign In Instead
-                    </a>
-                </div>
-
+          <div className="form-group">
+            <label htmlFor="phone">Phone (optional):</label>
+            <input type="tel" id="phone" name="phone" />
+          </div>
+          <button type="submit" className="btn btn-primary">Create Account</button>
+        </form>
+        <p>Already have an account? <a href="/users/login">Login here</a></p>
+      </div>
     </Layout>
   )
 }

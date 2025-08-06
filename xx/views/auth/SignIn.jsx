@@ -1,12 +1,12 @@
 const React = require('react')
 const Layout = require('../layouts/Layout')
 
-function SignIn(){
-  return(
+function SignIn() {
+  return (
     <Layout>
-      <div>
+      <div className="auth-container">
         <h1>Welcome Back</h1>
-            <form action="/users/login" method="POST">
+        <form action="/users/login" method="POST">
           <div className="form-group">
             <label htmlFor="email">Email:</label>
             <input type="email" id="email" name="email" required />
@@ -15,9 +15,9 @@ function SignIn(){
             <label htmlFor="password">Password:</label>
             <input type="password" id="password" name="password" required />
           </div>
-          <button type="submit" className="btn btn-primary">Sign In</button>
+          <button type="submit" className="btn btn-primary">Login</button>
         </form>
-        <p>Don't have an account? <a href="/users/signup">Sign Up</a></p>
+        <p>Don't have an account? <a href="/users/signup">Sign up here</a></p>
       </div>
     </Layout>
   )

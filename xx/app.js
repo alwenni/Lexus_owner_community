@@ -3,16 +3,16 @@ const morgan = require('morgan')
 const jsxEngine = require('jsx-view-engine')
 const methodOverride = require('method-override')
 const userRoutes = require('./controllers/auth/routeController')
-const routeController = require('./controllers/posts/routeController')
-// const apiRoutes = require('./routes/apiRoutes')
+const itemRoutes = require('./controllers/items/routeController')
+const apiRoutes = require('./routes/apiRoutes')
 const app = express()
 
 app.set('view engine', 'jsx')
 app.engine('jsx', jsxEngine())
 
-app.use(express.json()) // this is new this for the api
-app.use(express.urlencoded({ extended: true })) // req.body
-app.use(methodOverride('_method')) // <====== add method override
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 app.use((req, res, next) => {
     res.locals.data = {}
     next()
@@ -20,11 +20,16 @@ app.use((req, res, next) => {
 app.use(express.static('public'))
 app.use(morgan('dev'))
 
-// Web routes (for views)
+// Web routes
 app.use('/users', userRoutes)
-app.use('/posts', routeController)
+app.use('/items', itemRoutes)
 
-// API routes (for JSON responses)
-// app.use('/api', apiRoutes)
+// API routes
+app.use('/api', apiRoutes)
+
+// Home route
+app.get('/', (req, res) => {
+    res.redirect('/items')
+})
 
 module.exports = app

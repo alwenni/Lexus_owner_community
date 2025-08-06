@@ -1,17 +1,21 @@
-const viewController = {
-  signUp(req, res, next){
-    res.render('auth/SignUp')
-  },
-  signIn(req, res, next){
-    res.render('auth/SignIn')
-  },
-  apiAuth(req, res, next){
-    res.json({user: req.user, token: res.locals.data.token})
-  },
-  redirectToLogin(req, res, next){
-    res.redirect('/users/login')
-  }
+const User = require('../../models/user')
 
+// Show signup form
+exports.signUp = (req, res) => {
+  res.render('auth/SignUp')
 }
 
-module.exports = viewController
+// Show login form
+exports.signIn = (req, res) => {
+  res.render('auth/SignIn')
+}
+
+// Show user profile
+exports.showProfile = async (req, res) => {
+  try {
+    await req.user.populate('items')
+    res.render('auth/Profile', { user: req.user })
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+}

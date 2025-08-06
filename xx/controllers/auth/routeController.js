@@ -1,19 +1,15 @@
 const express = require('express')
 const router = express.Router()
-const dataController = require('./dataController')
-const viewController = require('./viewController')
-const fruitsViewController = require('../posts/viewController')
+const userDataController = require('./dataController')
+const userViewController = require('./viewController')
 
-router.post('/', dataController.createUser, viewController.redirectToLogin, (req, res) => {
-  console.log('hi')
-})// signup user => login page
-router.get('/signup', viewController.signUp) // show sign up form
-router.post('/login', dataController.loginUser, fruitsViewController.redirectHome)
-router.get('/login', viewController.signIn) // show login form
-router.put('/:id', dataController.updateUser)
-router.delete('/:id', dataController.auth, dataController.deleteUser)
-router.get('/',(req, res) => {
-  res.send('Ali website project')
-})
+// Web routes
+router.get('/signup', userViewController.signUp)
+router.post('/signup', userDataController.createUser, userViewController.signIn)
+router.get('/login', userViewController.signIn)
+router.post('/login', userDataController.loginUser, userViewController.showProfile)
+router.get('/profile', userDataController.auth, userViewController.showProfile)
+router.put('/:id', userDataController.auth, userDataController.updateUser)
+router.delete('/:id', userDataController.auth, userDataController.deleteUser)
 
 module.exports = router
