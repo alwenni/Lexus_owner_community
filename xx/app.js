@@ -23,6 +23,7 @@ app.use(morgan('dev'))
 // Web routes
 app.use('/users', userRoutes)
 app.use('/items', itemRoutes)
+app.use('/cars', require('./controllers/cars/routeController'))
 
 // API routes
 app.use('/api', apiRoutes)

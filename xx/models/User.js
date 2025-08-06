@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Car = require('./car') // Assuming Car model is in the same directory
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -31,7 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   cars: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Car' }]
 }, {
-  timestamps: true
+  timestamps: true // Automatically manage createdAt and updatedAt fields
 })
 
 // Hide password from JSON responses

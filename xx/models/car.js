@@ -14,7 +14,6 @@ const carSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
     maxlength: 1000
   },
   price: {
@@ -24,7 +23,6 @@ const carSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: true,
     enum: ['Sedan', 'Coupe', 'SUV', 'Truck', 'Van', 'Other']
   },
   condition: {
@@ -50,15 +48,14 @@ const carSchema = new mongoose.Schema({
 
   distance: {
     type: Number,
-    required: true,
     min: 0 // Distance in kilometers or miles
   },
   contactInfo: {
         type: String,
-        required: true,
-    },
-  
-  timestamps: true
+    }
+
+
+}, { timestamps: true // Automatically manage createdAt and updatedAt fields
 })
 
 const Car = mongoose.model('Car', carSchema)

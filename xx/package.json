@@ -1,4 +1,11 @@
 {
+  "main": "server.js",
+  "name": "lexus-owner-community",
+  "version": "1.0.0",
+  "description": "A community platform for Lexus owners to share experiences and resources.",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",

@@ -11,7 +11,7 @@ function IndexCar(props) {
         <div className="header">
           <h1>Cars</h1>
           {token && (
-            <a href={`/items/new?token=${token}`} className="btn btn-primary">List Item</a>
+            <a href={`/car/new?token=${token}`} className="btn btn-primary">List Item</a>
           )}
         </div>
 

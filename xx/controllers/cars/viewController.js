@@ -1,21 +1,22 @@
+const { token } = require("morgan")
 const Car = require("../../models/car")
 
 // Show all items
 exports.index = (req, res) => {
-  res.render('cars/Index', { Car: res.locals.data.items })
+  res.render('items/Index', { cars: res.locals.data.cars, token: res.locals.data.token })
 }
 
 // Show single item
 exports.show = (req, res) => {
-  res.render('cars/Show', { Car: res.locals.data.item })
+  res.render('items/ShowCar', { car: res.locals.data.car, token: res.locals.data.token })
 }
 
 // Show new item form
 exports.new = (req, res) => {
-  res.render('cars/New')
+  res.render('items/NewCar', { token: res.locals.data.token, car: res.locals.data.car })
 }
 
 // Show edit item form
 exports.edit = (req, res) => {
-  res.render('cars/Edit', { Car: res.locals.data.item })
+  res.render('items/EditCar', { token: res.locals.data.token, car: res.locals.data.car })
 }

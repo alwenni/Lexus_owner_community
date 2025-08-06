@@ -2,7 +2,7 @@ const React = require('react')
 const Layout = require('../layouts/Layout')
 
 function Index(props) {
-  const { items } = props.user
+  const items  = props.user.cars
   const token = props.token
   console.log(props)
   return (

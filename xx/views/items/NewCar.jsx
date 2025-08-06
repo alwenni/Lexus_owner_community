@@ -7,7 +7,7 @@ function New(props) {
   return (
     <Layout>
       <h1>Add a New Lexus Car</h1>
-      <form action={`/cars?token=${token}`} method="POST" encType="multipart/form-data" className="form">
+      <form action={`/cars?token=${token}`} method="POST" className="form">
         <input type="text" name="model" placeholder="Model (e.g. LS 430)" required />
         <input type="number" name="year" placeholder="Year" required />
         <input type="text" name="color" placeholder="Color" required />
