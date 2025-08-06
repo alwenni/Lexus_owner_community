@@ -27,6 +27,16 @@ function SignUp(props){
                 <p>Already have an account? <a href="/users/signin">Sign in here</a></p>
             </div>
           </div>
+
+          <div className="d-flex gap-2">
+                    <button type="submit" className="btn btn-primary">
+                        📝 Create Account
+                    </button>
+                    <a href="/users/signin" className="btn btn-secondary">
+                        🔐 Sign In Instead
+                    </a>
+                </div>
+
     </Layout>
   )
 }

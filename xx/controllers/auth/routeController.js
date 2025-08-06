@@ -9,9 +9,11 @@ router.post('/', dataController.createUser, viewController.redirectToLogin, (req
 })// signup user => login page
 router.get('/signup', viewController.signUp) // show sign up form
 router.post('/login', dataController.loginUser, fruitsViewController.redirectHome)
-router.get('/signin', viewController.signIn) // show login form
+router.get('/login', viewController.signIn) // show login form
 router.put('/:id', dataController.updateUser)
 router.delete('/:id', dataController.auth, dataController.deleteUser)
-
+router.get('/',(req, res) => {
+  res.send('Ali website project')
+})
 
 module.exports = router
