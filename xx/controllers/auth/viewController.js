@@ -1,4 +1,4 @@
-const User = require('../../models/User')
+const user = require('../../models/user')
 
 // Show signup form
 exports.signUp = (req, res) => {
