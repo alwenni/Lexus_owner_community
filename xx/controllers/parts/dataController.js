@@ -59,8 +59,11 @@
 
 
 
-const Part = requeire('../models/part')
-const Comment = require('../models/comments')
+const mongoose = require('mongoose')
+const Part = require('../../models/part')
+const Comment = require('../../models/comments')
+
+
 
 
 const dataController = {}
