@@ -13,9 +13,10 @@ exports.signIn = (req, res) => {
 // Show user profile
 exports.showProfile = async (req, res) => {
   try {
-    await req.user.populate('items')
-    res.render('auth/Profile', { user: req.user })
+    await req.user.populate('cars')
+    res.render('items/Index', { user: req.user, token: res.locals.data.token })
   } catch (error) {
     res.status(400).send(error.message)
   }
 }
+

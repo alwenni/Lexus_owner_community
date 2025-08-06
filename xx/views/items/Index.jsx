@@ -2,12 +2,12 @@ const React = require('react')
 const Layout = require('../layouts/Layout')
 
 function Index(props) {
-  const { items } = props
+  const { items } = props.user
   const token = props.token
-
+  console.log(props)
   return (
     <Layout>
-      <div className="marketplace-container">
+      <div className="marketplace-container ">
         <div className="header">
           <h1>Market-place</h1>
           {token && (
@@ -57,6 +57,8 @@ function Index(props) {
                 </div>
               </div>
             </div>
+
+            
           ))}
         </div>
       </div>

@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  items: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item' }]
+  cars: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Car' }]
 }, {
   timestamps: true
 })
