@@ -48,5 +48,5 @@ Welcome to the **Lexus Owner Community**, a full-stack web application built exc
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/lexus-community.git
+git clone https://github.com/alwenni/Lexus_owner_community.git
 cd lexus-community
