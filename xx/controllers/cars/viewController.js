@@ -1,22 +1,42 @@
 const { token } = require("morgan")
 const Car = require("../../models/car")
 
-// Show all items
+// controllers/cars/viewController.js
+
+// قائمة السيارات
 exports.index = (req, res) => {
-  res.render('items/Index', { cars: res.locals.data.cars, token: res.locals.data.token })
-}
+  const { cars } = res.locals.data;
+  return res.render('cars/Index', { cars, token: res.locals.data?.token });
+};
 
-// Show single item
-exports.show = (req, res) => {
-  res.render('items/ShowCar', { car: res.locals.data.car, token: res.locals.data.token })
-}
-
-// Show new item form
 exports.new = (req, res) => {
-  res.render('items/NewCar', { token: res.locals.data.token, car: res.locals.data.car })
-}
+  return res.render('cars/New', { token: res.locals.data?.token });
+};
 
-// Show edit item form
+exports.show = (req, res) => {
+  const { car, comments } = res.locals.data;
+  return res.render('cars/Show', { car, comments, token: res.locals.data?.token });
+};
+
 exports.edit = (req, res) => {
-  res.render('items/EditCar', { token: res.locals.data.token, car: res.locals.data.car })
-}
+  const { car } = res.locals.data;
+  return res.render('cars/Edit', { car, token: res.locals.data?.token });
+};
+
+
+// بعد الإنشاء
+exports.redirectShow = (req, res) => {
+  const { car } = res.locals.data;
+  return res.redirect(`/cars/${car._id}`);
+};
+
+// بعد التعديل
+exports.redirectUpdated = (req, res) => {
+  const { car } = res.locals.data;
+  return res.redirect(`/cars/${car._id}`);
+};
+
+// بعد الحذف
+exports.redirectIndex = (req, res) => {
+  return res.redirect('/cars');
+};

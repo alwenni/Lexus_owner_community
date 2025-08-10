@@ -1,15 +1,18 @@
-const express = require('express')
-const router = express.Router()
-const userDataController = require('./dataController')
-const userViewController = require('./viewController')
+// controllers/auth/routeController.js
+const express = require('express');
+const router = express.Router();
 
-// Web routes
-router.get('/signup', userViewController.signUp)
-router.post('/signup', userDataController.createUser, userViewController.signIn)
-router.get('/login', userViewController.signIn)
-router.post('/login', userDataController.loginUser, userViewController.showProfile)
-router.get('/profile', userDataController.auth, userViewController.showProfile)
-router.put('/:id', userDataController.auth, userDataController.updateUser)
-router.delete('/:id', userDataController.auth, userDataController.deleteUser)
+const data = require('./dataController');
+const view = require('./viewController');
+const auth = require('../../middleware/auth'); 
 
-module.exports = router
+// فورمات
+router.get('/signup', view.signUp);
+router.post('/signup', data.signup);         // ← هنا
+router.get('/login',  view.signIn);
+router.post('/login',  data.login);          // ← وهنا
+
+router.get('/profile', data.auth, data.profile, view.showProfile);
+router.get('/logout', view.logout);
+
+module.exports = router;

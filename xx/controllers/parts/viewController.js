@@ -2,20 +2,37 @@ const Part = require("../../models/part")
 
 // Show all items
 exports.index = (req, res) => {
-  res.render('parts/Index', { Part: res.locals.data.items })
-}
+  const { parts } = res.locals.data;
+  return res.render('parts/Index', { parts, token: res.locals.data?.token });
+};
 
-// Show single item
-exports.show = (req, res) => {
-  res.render('parts/Show', { Part: res.locals.data.item })
-}
-
-// Show new item form
 exports.new = (req, res) => {
-  res.render('parts/New')
-}
+  return res.render('parts/New', { token: res.locals.data?.token });
+};
 
-// Show edit item form
+exports.show = (req, res) => {
+  const { part, comments } = res.locals.data;
+  return res.render('parts/Show', { part, comments, token: res.locals.data?.token });
+};
+
 exports.edit = (req, res) => {
-  res.render('parts/Edit', { Part: res.locals.data.item })
-}
+  const { part } = res.locals.data;
+  return res.render('parts/Edit', { part, token: res.locals.data?.token });
+};
+
+// ✅ مهم: بعد الإنشاء نرجّع لصفحة القطعة
+exports.redirectShow = (req, res) => {
+  const { part } = res.locals.data;
+  return res.redirect(`/parts/${part._id}`);
+};
+
+// ✅ بعد التحديث
+exports.redirectUpdated = (req, res) => {
+  const { part } = res.locals.data;
+  return res.redirect(`/parts/${part._id}`);
+};
+
+// ✅ بعد الحذف
+exports.redirectIndex = (_req, res) => {
+  return res.redirect('/parts');
+};

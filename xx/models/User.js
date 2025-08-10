@@ -1,60 +1,31 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const Car = require('./car') // Assuming Car model is in the same directory
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6
-  },
-  location: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  phone: {
-    type: String,
-    trim: true
-  },
-  cars: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Car' }]
-}, {
-  timestamps: true // Automatically manage createdAt and updatedAt fields
-})
+  name:     { type: String, required: true, trim: true },
+  username: { type: String, required: true, unique: true, trim: true, lowercase: true },
+  email:    { type: String, required: true, unique: true, trim: true, lowercase: true },
+  password: { type: String, required: true, minlength: 6 },
+  location: { type: String, trim: true },
+  phone:    { type: String, trim: true },
+}, { timestamps: true });
 
-// Hide password from JSON responses
-userSchema.methods.toJSON = function() {
-  const user = this.toObject()
-  delete user.password
-  return user
-}
-
-// Hash password before saving
 userSchema.pre('save', async function(next) {
   if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 8)
+    this.password = await bcrypt.hash(this.password, 10); // 10 جيد
   }
-  next()
-})
+  next();
+});
 
-// Generate JWT token
-userSchema.methods.generateAuthToken = async function() {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET)
-  return token
-}
+userSchema.methods.toJSON = function() {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
-const User = mongoose.model('User', userSchema)
-module.exports = User
+userSchema.methods.generateAuthToken = function() {
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+};
+
+module.exports = mongoose.model('User', userSchema);

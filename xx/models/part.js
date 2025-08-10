@@ -1,62 +1,17 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const partSchema = new mongoose.Schema({
-  seller: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  contactInfo: {
-        type: String,
-        required: true,
-    },
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-    maxlength: 100
-  },
-  description: {
-    type: String,
-    required: true,
-    maxlength: 1000
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  
-  condition: {
-    type: String,
-    required: true,
-    enum: ['New', 'used']
-  },
-  type: {
-    type: String,
-    required: true,
-    enum: ["original" , "Aftermarket" , "imitative"]
-  },
-  images: [{
-    type: String,
-    trim: true
-  }],
-  location: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  year: {
-    type: Number,
-    required: true,
-    min: 1886, // The year the first car was invented
-    max: new Date().getFullYear() + 1 // Allow up to next year
-  },
+  seller:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  title:     { type: String, required: true, trim: true },     // مثل "كمبروسر GS300 1999"
+  description: { type: String, trim: true },
+  condition: { type: String, enum: ['new', 'used', 'refurbished'], default: 'used' },
+  price:     { type: Number, required: true },
+  location:  { type: String, trim: true },
+  images:    [{ type: String }],
+  compatibleModels: [{ type: String, trim: true }], // GS300 1999, IS250 2010...
+  status:    { type: String, enum: ['active', 'sold', 'hidden'], default: 'active' },
+}, { timestamps: true });
 
-  
-  
-  timestamps: true
-})
+partSchema.index({ title: 'text', description: 'text', location: 'text', compatibleModels: 'text' });
 
-const Part = mongoose.model('Part', partSchema)
-module.exports = Part
+module.exports = mongoose.model('Part', partSchema);

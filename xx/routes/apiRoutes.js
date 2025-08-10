@@ -1,21 +1,81 @@
-const express = require('express')
-const router = express.Router()
-const userApiController = require('../controllers/auth/apiController')
-const itemApiController = require('../controllers/items/apiController')
-const itemDataController = require('../controllers/items/dataController')
+// routes/apiRoutes.js
+const express = require('express');
+const router = express.Router();
 
-// User API Routes
-router.post('/users', userApiController.createUser)
-router.post('/users/login', userApiController.loginUser)
-router.get('/users/profile', userApiController.auth, userApiController.getProfile)
-router.put('/users/:id', userApiController.auth, userApiController.updateUser)
-router.delete('/users/:id', userApiController.auth, userApiController.deleteUser)
+/* ---------- Auth (API) ---------- */
+const authApi = require('../controllers/auth/apiController');
 
-// Item API Routes
-router.get('/items', itemDataController.index, itemApiController.index)
-router.get('/items/:id', itemDataController.show, itemApiController.show)
-router.post('/items', userApiController.auth, itemDataController.create, itemApiController.create)
-router.put('/items/:id', userApiController.auth, itemDataController.update, itemApiController.update)
-router.delete('/items/:id', userApiController.auth, itemDataController.destroy, itemApiController.destroy)
+/* ---------- Auth Middleware (JWT) ---------- */
+const auth = require('../middleware/auth'); // تأكد الملف موجود
 
-module.exports = router
+/* ---------- Data Controllers (Cars / Parts / Comments) ---------- */
+const carsData = require('../controllers/cars/dataController');
+const partsData = require('../controllers/parts/dataController');
+const commentsData = require('../controllers/comments/dataController');
+
+/* ===================== Users API ===================== */
+// تسجيل
+router.post('/users/signup', authApi.signup);
+// تسجيل دخول
+router.post('/users/login', authApi.login);
+// بروفايل (JWT)
+router.get('/users/profile', auth, authApi.profile);
+
+/* ===================== Cars API ===================== */
+router.get('/cars', carsData.index, (req, res) => {
+  res.json({ cars: res.locals.data.cars || [] });
+});
+
+router.get('/cars/:id', carsData.show, (req, res) => {
+  res.json({
+    car: res.locals.data.car,
+    comments: res.locals.data.comments || []
+  });
+});
+
+router.post('/cars', auth, carsData.create, (req, res) => {
+  res.status(201).json({ car: res.locals.data.car });
+});
+
+router.put('/cars/:id', auth, carsData.update, (req, res) => {
+  res.json({ car: res.locals.data.car });
+});
+
+router.delete('/cars/:id', auth, carsData.destroy, (req, res) => {
+  res.json({ ok: true });
+});
+
+/* ===================== Parts API ===================== */
+router.get('/parts', partsData.index, (req, res) => {
+  res.json({ parts: res.locals.data.parts || [] });
+});
+
+router.get('/parts/:id', partsData.show, (req, res) => {
+  res.json({
+    part: res.locals.data.part,
+    comments: res.locals.data.comments || []
+  });
+});
+
+router.post('/parts', auth, partsData.create, (req, res) => {
+  res.status(201).json({ part: res.locals.data.part });
+});
+
+router.put('/parts/:id', auth, partsData.update, (req, res) => {
+  res.json({ part: res.locals.data.part });
+});
+
+router.delete('/parts/:id', auth, partsData.destroy, (req, res) => {
+  res.json({ ok: true });
+});
+
+/* ===================== Comments API ===================== */
+router.post('/comments', auth, commentsData.create, (req, res) => {
+  res.status(201).json({ comment: res.locals.data.comment });
+});
+
+router.get('/comments/:onModel/:on', commentsData.listForTarget, (req, res) => {
+  res.json({ comments: res.locals.data.comments || [] });
+});
+
+module.exports = router;

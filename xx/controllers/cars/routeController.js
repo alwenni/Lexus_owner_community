@@ -1,17 +1,15 @@
-const express = require('express')
-const router = express.Router()
-const carDataController = require('./controller')
-const carViewController = require('./viewController')
-const userDataController = require('../auth/dataController')
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth'); // عدّل المسار إذا لزم
+const data = require('./dataController');
+const view = require('./viewController');
 
-// Web routes
-router.get('/', carDataController.listCars, carViewController.index)
-router.get('/new', userDataController.auth, carViewController.new)
-router.post('/', userDataController.auth, carDataController.createCar, carViewController.show)
-router.get('/:id', carDataController.showCar, carViewController.show)
-router.get('/:id/edit', userDataController.auth, carDataController.showCar, carViewController.edit)
-router.put('/:id', userDataController.auth, carDataController.updateCar, carViewController.show)
-router.delete('/:id', userDataController.auth, carDataController.deleteCar, carViewController.show)
+router.get('/',        data.index, view.index);
+router.get('/new',     auth,       view.new);
+router.get('/:id',     data.show,  view.show);
+router.get('/:id/edit',auth,       data.show,  view.edit);
+router.post('/',       auth,       data.create,  view.redirectShow);
+router.put('/:id',     auth,       data.update,  view.redirectUpdated);
+router.delete('/:id',  auth,       data.destroy, view.redirectIndex);
 
-module.exports = router
-
+module.exports = router;

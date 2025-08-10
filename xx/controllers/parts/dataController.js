@@ -1,176 +1,118 @@
-/** 
- seller: {
-     type: mongoose.Schema.Types.ObjectId,
-     ref: 'User',
-     required: true
-   },
-   contactInfo: {
-         type: String,
-         required: true,
-     },
-   name: {
-     type: String,
-     required: true,
-     trim: true,
-     maxlength: 100
-   },
-   description: {
-     type: String,
-     required: true,
-     maxlength: 1000
-   },
-   price: {
-     type: Number,
-     required: true,
-     min: 0
-   },
-   
-   condition: {
-     type: String,
-     required: true,
-     enum: ['New', 'used']
-   },
-   type: {
-     type: String,
-     required: true,
-     enum: ["original" , "Aftermarket" , "imitative"]
-   },
-   images: [{
-     type: String,
-     trim: true
-   }],
-   location: {
-     type: String,
-     required: true,
-     trim: true
-   },
-   year: {
-     type: Number,
-     required: true,
-     min: 1886, // The year the first car was invented
-     max: new Date().getFullYear() + 1 // Allow up to next year
-   },
- 
-   
-   
-   timestamps: true
- })
-**/
+const Part = require('../../models/part');
+const Comment = require('../../models/comment');
 
+// Helper: يحوّل "a, b , c" => ["a","b","c"]
+const split = (s) => (typeof s === 'string'
+  ? s.split(',').map(x => x.trim()).filter(Boolean)
+  : Array.isArray(s) ? s : []);
 
-
-const mongoose = require('mongoose')
-const Part = require('../../models/part')
-const Comment = require('../../models/comments')
-
-
-
-
-const dataController = {}
-
-// Create a new 
-dataController.createPart = async (req, res) => {
-    try {
-        const part = new Part({
-            seller: req.user._id,
-            contactInfo: req.body.contactInfo,
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            condition: req.body.condition,
-            type: req.body.type,
-            images: req.body.images,
-            location: req.body.location,
-            year: req.body.year
-        })
-        await part.save()
-        res.status(201).json(part)
-    } catch (error) {
-        console.error('Error creating part:', error)
-        res.status(500).json({ error: 'Internal server error' })
-    }
-}
-
-// Show a specific part
-dataController.showPart = async (req, res) => {
-    try {
-        const part = await Part.findById(req.params.id).populate('seller', 'name email')
-        if (!part) {
-            return res.status(404).json({ error: 'Part is not found' })
-        }
-        res.status(200).json(part)
-    } catch (error) {
-        console.error('Error fetching part:', error)
-        res.status(500).json({ error: 'Internal server error' })
-    }}
-
-// Update a specific part
-dataController.updatePart = async (req, res) => {
-    try {
-        const part = await Part.findByIdAndUpdate(req.params.id, {
-            contactInfo: req.body.contactInfo,
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            condition: req.body.condition,
-            type: req.body.type,
-            images: req.body.images,
-            location: req.body.location,
-            year: req.body.year
-        }, { new: true, runValidators: true })
-
-        if (!part) {
-            return res.status(404).json({ error: 'Part not found' })
-        }
-        res.status(200).json(part)
-    } catch (error) {
-        console.error('Error updating part:', error)
-        res.status(500).json({ error: 'Internal server error' })
-    }
-
-// Delete a specific part
-dataController.deletePart = async (req, res) => {
-    try {
-        const part = await Part.findByIdAndDelete(req.params.id)
-        if (!part) {
-            return res.status(404).json({ error: 'Part not found' })
-        }
-        res.status(200).json({ message: 'Part deleted successfully' })
-    } catch (error) {
-        console.error('Error deleting part:', error)
-        res.status(500).json({ error: 'Internal server error' })
-    }
-}
-
-// List all parts
-dataController.listParts = async (req, res) => {
-    try {
-        const parts = await Part.find().populate('seller', 'name email')
-        res.status(200).json(parts)
-    } catch (error) {
-        console.error('Error fetching parts:', error)
-        res.status(500).json({ error: 'Internal server error' })
-    }}
-
-// comment on a car
-
-// /:id/comment post
-dataController.createComment = async (req, res) => {
+// GET /parts — list + filters
+exports.index = async (req, res, next) => {
   try {
-    const comment = new Comment({
-      content: req.body.content,
-      author: req.user._id,
-      listing: req.params.id
-    })
-    await comment.save()
-    const car = await Car.findById(req.params.id)
-    car.comments.addToSet(comment._id)  // Add comment to car's comments array      
-    await car.save()
-    next()
-  } catch (error) {
-    console.error('Error creating comment:', error)
-    res.status(500).json({ error: 'Internal server error' })
-    }
-    }}
+    const { q, title, condition, minPrice, maxPrice, location, status } = req.query;
+    const filter = {};
 
-    module.exports = dataController
+    filter.status = status || 'active';
+    if (title) filter.title = new RegExp(title, 'i');
+    if (condition) filter.condition = condition;
+    if (location) filter.location = new RegExp(location, 'i');
+
+    if (minPrice || maxPrice) filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+
+    const query = Part.find(filter);
+    if (q) query.find({ $text: { $search: q } });
+
+    const parts = await query.sort({ createdAt: -1 }).populate('seller', 'username location');
+    res.locals.data.parts = parts;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET /parts/:id — show one + comments
+exports.show = async (req, res, next) => {
+  try {
+    const part = await Part.findById(req.params.id).populate('seller', 'username location phone');
+    if (!part) return res.status(404).send('Part not found');
+
+    const comments = await Comment.find({ onModel: 'Part', on: part._id })
+      .populate('author', 'username location')
+      .sort({ createdAt: -1 });
+
+    res.locals.data.part = part;
+    res.locals.data.comments = comments;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// POST /parts — create
+exports.create = async (req, res, next) => {
+  try {
+    const payload = {
+      seller:           req.user._id,
+      title:            req.body.title?.trim(),
+      description:      req.body.description?.trim(),
+      condition:        req.body.condition || 'used',
+      price:            Number(req.body.price),
+      location:         req.body.location?.trim(),
+      images:           Array.isArray(req.body.images) ? req.body.images : split(req.body.images),
+      compatibleModels: Array.isArray(req.body.compatibleModels) ? req.body.compatibleModels : split(req.body.compatibleModels),
+      status:           req.body.status || 'active',
+    };
+
+    const part = await Part.create(payload);
+    res.locals.data.part = part;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PUT /parts/:id — update (owner only)
+exports.update = async (req, res, next) => {
+  try {
+    const part = await Part.findById(req.params.id);
+    if (!part) return res.status(404).send('Part not found');
+    if (String(part.seller) !== String(req.user._id)) return res.status(403).send('Forbidden');
+
+    // تحويل الحقول النصية لمصفوفات إذا أرسلت كنص مفصول بفواصل
+    const body = { ...req.body };
+    if (typeof body.images !== 'undefined' && !Array.isArray(body.images)) {
+      body.images = split(body.images);
+    }
+    if (typeof body.compatibleModels !== 'undefined' && !Array.isArray(body.compatibleModels)) {
+      body.compatibleModels = split(body.compatibleModels);
+    }
+
+    const updatable = ['title','description','condition','price','location','images','compatibleModels','status'];
+    updatable.forEach((k) => {
+      if (typeof body[k] !== 'undefined') part[k] = body[k];
+    });
+
+    await part.save();
+    res.locals.data.part = part;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /parts/:id — delete (owner only)
+exports.destroy = async (req, res, next) => {
+  try {
+    const part = await Part.findById(req.params.id);
+    if (!part) return res.status(404).send('Part not found');
+    if (String(part.seller) !== String(req.user._id)) return res.status(403).send('Forbidden');
+
+    await part.deleteOne();
+    res.locals.data.deleted = true;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
